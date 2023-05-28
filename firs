@@ -16,7 +16,7 @@ BEGIN
                            y, m, d0, d1);
 
             -- Вставляем данные столбцов city и temperature в созданный раздел (партицию)
-            EXECUTE format('INSERT INTO data.measurement_part_y%d_m%d (city, temperature) SELECT city, temperature FROM data.measurement WHERE EXTRACT(YEAR FROM mark) = %d AND EXTRACT(MONTH FROM mark) = %d',
+            EXECUTE format('INSERT INTO data.measurement_part_y%d_m%d (city, temperature) SELECT city::integer, temperature::double precision FROM data.measurement WHERE EXTRACT(YEAR FROM mark) = %d AND EXTRACT(MONTH FROM mark) = %d',
                            y, m, y, m);
         END LOOP;
     END LOOP;
