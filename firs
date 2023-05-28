@@ -1,29 +1,25 @@
--- Создание разделенной таблицы на основе таблицы measurement_all
-CREATE TABLE IF NOT EXISTS data.measurement (
-    mark TIMESTAMP WITHOUT TIME ZONE,
-    temperature NUMERIC,
-    city TEXT,
-    CONSTRAINT measurement_mark_temperature_check CHECK (temperature >= -98)
-) PARTITION BY RANGE (mark);
-
--- Создание функции для создания разделов
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
-    RETURNS VOID
-    LANGUAGE PLPGSQL
-AS $$
+CREATE OR REPLACE FUNCTION data.create_partitions(y1 INT, y2 INT) RETURNS VOID AS $$
 DECLARE
-    y INTEGER;
-    m INTEGER;
+    y INT;
+    m INT;
     d0 TIMESTAMP;
     d1 TIMESTAMP;
+    min_temperature NUMERIC := -98; -- Минимальная температура
 BEGIN
     FOR y IN y1 .. y2 LOOP
         FOR m IN 1 .. 12 LOOP
             d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1));
             d1 := d0 + INTERVAL '1 month';
-            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                           y, m, d0, d1);
+
+            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
+                           LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+
+            EXECUTE format('ALTER TABLE data.measurement_part_y%sm%s ADD CONSTRAINT measurement_part_y%sm%s_mark_check CHECK (mark >= %L)',
+                           LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0);
+
+            EXECUTE format('ALTER TABLE data.measurement_part_y%sm%s ADD CONSTRAINT measurement_part_y%sm%s_temperature_check CHECK (temperature >= %s)',
+                           LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), min_temperature);
         END LOOP;
     END LOOP;
 END;
-$$;
+$$ LANGUAGE plpgsql;
