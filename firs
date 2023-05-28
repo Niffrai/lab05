@@ -1,6 +1,5 @@
-ERROR:  syntax error at or near "y"
-LINE 19:             d0 := DATE_TRUNC('MONTH', TIMESTAMP (y || '-' ||...
-                                                          ^ 
-
-SQL state: 42601
-Character: 590
+CREATE TABLE measurement_sequence AS
+SELECT city, temperature
+FROM measurement_all
+WHERE temperature > -99
+ORDER BY mark ASC;
