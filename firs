@@ -1,20 +1,5 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INT, y2 INT)
-RETURNS VOID AS $$
-DECLARE
-    start_date DATE;
-    end_date DATE;
-    curr_date DATE;
-    partition_name TEXT;
-BEGIN
-    FOR year IN y1..y2 LOOP
-        FOR month IN 1..12 LOOP
-            start_date := MAKE_DATE(year, month, 1);
-            end_date := DATE_TRUNC('MONTH', start_date) + INTERVAL '1 MONTH' - INTERVAL '1 DAY';
-            partition_name := 'part_y' || year || 'm' || LPAD(month::TEXT, 2, '0');
-            
-            EXECUTE 'CREATE TABLE IF NOT EXISTS data.measurement_' || partition_name || ' PARTITION OF data.measurement '
-                'FOR VALUES FROM (''' || start_date || ''') TO (''' || end_date || ''')';
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  "measurement" is not partitioned
+CONTEXT:  SQL statement "CREATE TABLE IF NOT EXISTS data.measurement_part_y1995m01 PARTITION OF data.measurement FOR VALUES FROM ('1995-01-01') TO ('1995-01-31')"
+PL/pgSQL function data.create_partition(integer,integer) line 14 at EXECUTE 
+
+SQL state: 42P17
