@@ -1,22 +1,3 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
-RETURNS VOID AS $$
-DECLARE
-    year INTEGER;
-    month INTEGER;
-    partition_name TEXT;
-    start_date DATE;
-    end_date DATE;
-BEGIN
-    FOR year IN y1..y2 LOOP
-        FOR month IN 1..12 LOOP
-            partition_name := 'part_y' || year || 'm' || LPAD(month::TEXT, 2, '0');
-            start_date := DATE(year, month, 1);
-            end_date := DATE(year, month, 1) + INTERVAL '1 MONTH' - INTERVAL '1 DAY';
-            
-            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_%s PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                           partition_name, start_date, end_date);
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE plpgsql;
+SELECT data.create_partition(EXTRACT(YEAR FROM MIN(mark)), EXTRACT(YEAR FROM MAX(mark)))
+FROM data.measurement_all;
 
