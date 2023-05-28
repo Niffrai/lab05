@@ -1,30 +1,28 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER) RETURNS VOID AS $$
+CREATE TABLE IF NOT EXISTS data.measurement (
+    id SERIAL PRIMARY KEY,
+    mark TIMESTAMP WITHOUT TIME ZONE,
+    city TEXT,
+    temperature NUMERIC
+);
+CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
+    RETURNS VOID
+    LANGUAGE PLPGSQL
+AS $$
 DECLARE
-    d0 TIMESTAMP;
-    d1 TIMESTAMP;
     y INTEGER;
     m INTEGER;
+    d0 TIMESTAMP;
+    d1 TIMESTAMP;
 BEGIN
-    -- Create initial partitioned table
-    EXECUTE '
-        CREATE TABLE IF NOT EXISTS data.measurement (
-            id SERIAL,
-            mark TIMESTAMP WITHOUT TIME ZONE,
-            temperature NUMERIC,
-            city TEXT,
-            PRIMARY KEY (mark, id)
-        )
-        PARTITION BY RANGE (mark)
-    ';
-
     FOR y IN y1 .. y2 LOOP
         FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', (y::TEXT || '-' || LPAD(m::TEXT, 2, '0') || '-01')::TIMESTAMP);
-            d1 := (d0 + INTERVAL '1 month')::DATE - INTERVAL '1 day';
-            EXECUTE format('
-                CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement
-                FOR VALUES FROM (%L) TO (%L)', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+            d0 := DATE_TRUNC('MONTH', TIMESTAMP (y || '-' || m || '-01'));
+            d1 := d0 + INTERVAL '1 month';
+            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
+                           y, m, d0, d1);
+            EXECUTE format('INSERT INTO data.measurement_part_y%sm%02d SELECT * FROM data.measurement_all WHERE mark >= %L AND mark < %L',
+                           y, m, d0, d1);
         END LOOP;
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$;
