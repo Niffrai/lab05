@@ -1,27 +1,21 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INT, y2 INT)
-RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
+  RETURNS VOID AS
+$$
 DECLARE
-    start_date DATE;
-    end_date DATE;
-    curr_date DATE;
-    partition_name TEXT;
+  start_date DATE;
+  end_date DATE;
+  year INTEGER;
+  month INTEGER;
 BEGIN
-    -- Step 1: Create the master table if it doesn't exist
-    EXECUTE 'CREATE TABLE IF NOT EXISTS data.measurement (LIKE data.measurement_all INCLUDING ALL)';
-    
-    -- Step 2: Add the partitioning constraint to the master table
-    EXECUTE 'ALTER TABLE data.measurement ADD CONSTRAINT measurement_date_range CHECK (mark >= DATE ''' || y1 || '-01-01'' AND mark <= DATE ''' || y2 || '-12-31'')';
-    
-    -- Step 3: Create individual partitions
-    FOR year IN y1..y2 LOOP
-        FOR month IN 1..12 LOOP
-            start_date := MAKE_DATE(year, month, 1);
-            end_date := DATE_TRUNC('MONTH', start_date) + INTERVAL '1 MONTH' - INTERVAL '1 DAY';
-            partition_name := 'part_y' || year || 'm' || LPAD(month::TEXT, 2, '0');
-            
-            EXECUTE 'CREATE TABLE IF NOT EXISTS data.measurement_' || partition_name || ' PARTITION OF data.measurement '
-                'FOR VALUES FROM (''' || start_date || ''') TO (''' || end_date || ''')';
-        END LOOP;
+  FOR year IN y1..y2 LOOP
+    FOR month IN 1..12 LOOP
+      start_date := DATE_TRUNC('MONTH', DATE(year, month, 1));
+      end_date := DATE_TRUNC('MONTH', DATE(year, month, 1) + INTERVAL '1 MONTH') - INTERVAL '1 DAY';
+      
+      EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%dm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
+                     year, month, start_date, end_date);
     END LOOP;
+  END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$
+LANGUAGE plpgsql;
