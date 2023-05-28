@@ -6,10 +6,10 @@ DECLARE
 BEGIN
     FOR y IN y1 .. y2 LOOP
         FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', TO_TIMESTAMP(CAST(y AS TEXT) || '-' || CAST(m AS TEXT) || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'));
+            d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1));
             d1 := d0 + INTERVAL '1 month';
             EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                y, m, d0, d1);
+                y, m, TO_CHAR(d0, 'YYYY-MM-DD'), TO_CHAR(d1, 'YYYY-MM-DD'));
         END LOOP;
     END LOOP;
 END;
