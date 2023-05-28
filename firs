@@ -1,13 +1,36 @@
-ERROR:  Failing row contains (30, 1995-01-31 00:00:00, 79.7, 18).new row for relation "measurement_part_y1995m01" violates partition constraint 
+CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER) RETURNS VOID AS $$
+DECLARE
+    d0 TIMESTAMP;
+    d1 TIMESTAMP;
+    y INTEGER;
+    m INTEGER;
+BEGIN
+    -- Create initial partitioned table
+    EXECUTE '
+        CREATE TABLE IF NOT EXISTS data.measurement (
+            id SERIAL,
+            mark TIMESTAMP WITHOUT TIME ZONE,
+            temperature DOUBLE PRECISION,
+            city INTEGER,
+            PRIMARY KEY (mark, id)
+        )
+        PARTITION BY RANGE (mark)
+    ';
 
-ERROR:  new row for relation "measurement_part_y1995m01" violates partition constraint
-SQL state: 23514
-Detail: Failing row contains (30, 1995-01-31 00:00:00, 79.7, 18).
-Context: SQL statement "
-                INSERT INTO data.measurement_part_y1995m01 (mark, temperature, city)
+    FOR y IN y1 .. y2 LOOP
+        FOR m IN 1 .. 12 LOOP
+            d0 := DATE_TRUNC('MONTH', (y::TEXT || '-' || LPAD(m::TEXT, 2, '0') || '-01')::TIMESTAMP);
+            d1 := (d0 + INTERVAL '1 month')::DATE - INTERVAL '1 second';  -- Используем последнюю секунду месяца
+            EXECUTE format('
+                CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement
+                FOR VALUES FROM (%L) TO (%L)', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+
+            EXECUTE format('
+                INSERT INTO data.measurement_part_y%sm%s (mark, temperature, city)
                 SELECT mark, temperature, city
                 FROM data.measurement_all
-                WHERE EXTRACT(YEAR FROM mark) = 1995
-                AND EXTRACT(MONTH FROM mark) = 1
-                AND temperature >= -98"
-PL/pgSQL function data.create_partition(integer,integer) line 30 at EXECUT
+                WHERE mark >= %L AND mark <= %L AND temperature >= -98', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+        END LOOP;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
