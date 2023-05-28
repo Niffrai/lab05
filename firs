@@ -1,5 +1,20 @@
-CREATE TABLE measurement_sequence AS
-SELECT city, temperature
-FROM measurement_all
-WHERE temperature > -99
-ORDER BY mark ASC;
+CREATE OR REPLACE FUNCTION data.create_partitions(y1 INT, y2 INT) RETURNS VOID AS $$
+DECLARE
+    y INT;
+    m INT;
+    d0 TIMESTAMP;
+    d1 TIMESTAMP;
+BEGIN
+    -- Создаем разделы (партиции) для каждого года и месяца в диапазоне y1 и y2
+    FOR y IN y1 .. y2 LOOP
+        FOR m IN 1 .. 12 LOOP
+            d0 := DATE_TRUNC('MONTH', TIMESTAMP (y::TEXT || '-' || m::TEXT || '-01'));
+            d1 := d0 + INTERVAL '1 month';
+
+            -- Создаем раздел (партицию) для текущего года и месяца на основе таблицы data.measurement_all
+            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement_all FOR VALUES FROM (%L) TO (%L)',
+                           LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+        END LOOP;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
