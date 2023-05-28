@@ -1,16 +1,8 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
-RETURNS VOID AS $$
-DECLARE
-    d0 TIMESTAMP;
-    d1 TIMESTAMP;
-BEGIN
-    FOR y IN y1 .. y2 LOOP
-        FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1));
-            d1 := d0 + INTERVAL '1 month';
-            EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                y, m, TO_CHAR(d0, 'YYYY-MM-DD'), TO_CHAR(d1, 'YYYY-MM-DD'));
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE PLPGSQL;
+ERROR:  function make_timestamp(integer, integer, integer) does not exist
+LINE 1: d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1))
+                                  ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+QUERY:  d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1))
+CONTEXT:  PL/pgSQL function data.create_partition(integer,integer) line 8 at assignment 
+
+SQL state: 42883
