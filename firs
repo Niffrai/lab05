@@ -8,12 +8,16 @@ BEGIN
     -- Создаем разделы (партиции) для каждого года и месяца в диапазоне y1 и y2
     FOR y IN y1 .. y2 LOOP
         FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', DATE(y, m, 1));
+            d0 := DATE_TRUNC('MONTH', TIMESTAMP (y::TEXT || '-' || m::TEXT || '-01'));
             d1 := d0 + INTERVAL '1 month';
 
             -- Создаем раздел (партицию) для текущего года и месяца на основе таблицы data.measurement
             EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%s_m%s PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
                            y, m, d0, d1);
+
+            -- Вставляем данные столбцов city и temperature в созданный раздел (партицию)
+            EXECUTE format('INSERT INTO data.measurement_part_y%s_m%s (city, temperature) SELECT city, temperature FROM data.measurement WHERE EXTRACT(YEAR FROM mark) = %s AND EXTRACT(MONTH FROM mark) = %s',
+                           y, m, y, m);
         END LOOP;
     END LOOP;
 END;
