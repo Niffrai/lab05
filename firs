@@ -1,3 +1,8 @@
-SELECT data.create_partition(EXTRACT(YEAR FROM MIN(mark)), EXTRACT(YEAR FROM MAX(mark)))
-FROM data.measurement_all;
+FOR y IN y0 .. y1 LOOP
+	FOR m IN 1 .. 12 LOOP
+		d0 = make_date(y, m, 1);
+		d1 = d0 + INTERVAL '1 month';
+		EXECUTE format('...', ...);
+	END LOOP;
+END LOOP;
 
