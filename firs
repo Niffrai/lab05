@@ -1,21 +1,8 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
-  RETURNS VOID AS
-$$
-DECLARE
-  start_date DATE;
-  end_date DATE;
-  year INTEGER;
-  month INTEGER;
-BEGIN
-  FOR year IN y1..y2 LOOP
-    FOR month IN 1..12 LOOP
-      start_date := DATE_TRUNC('MONTH', DATE(year, month, 1));
-      end_date := DATE_TRUNC('MONTH', DATE(year, month, 1) + INTERVAL '1 MONTH') - INTERVAL '1 DAY';
-      
-      EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%dm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                     year, month, start_date, end_date);
-    END LOOP;
-  END LOOP;
-END;
-$$
-LANGUAGE plpgsql;
+ERROR:  function date(integer, integer, integer) does not exist
+LINE 1: start_date := DATE_TRUNC('MONTH', DATE(year, month, 1))
+                                          ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+QUERY:  start_date := DATE_TRUNC('MONTH', DATE(year, month, 1))
+CONTEXT:  PL/pgSQL function data.create_partition(integer,integer) line 10 at assignment 
+
+SQL state: 42883
