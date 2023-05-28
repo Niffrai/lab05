@@ -9,7 +9,7 @@ BEGIN
         FOR m IN 1 .. 12 LOOP
             d0 := DATE_TRUNC('MONTH', (y::TEXT || '-' || LPAD(m::TEXT, 2, '0') || '-01')::TIMESTAMP);
             d1 := (d0 + INTERVAL '1 month')::DATE - INTERVAL '1 day';
-            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+            EXECUTE format('ALTER TABLE data.measurement ATTACH PARTITION data.measurement_part_y%sm%s FOR VALUES FROM (%L) TO (%L)', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
         END LOOP;
     END LOOP;
 END;
