@@ -1,6 +1,8 @@
-ERROR:  syntax error at or near "MAKE_DATE"
-LINE 12:             d0 := DATE_TRUNC('MONTH', TIMESTAMP MAKE_DATE(y,...
-                                                         ^ 
+ERROR:  function make_timestamp(integer, integer, integer) does not exist
+LINE 1: d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1))
+                                  ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+QUERY:  d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1))
+CONTEXT:  PL/pgSQL function data.create_partition(integer,integer) line 11 at assignment 
 
-SQL state: 42601
-Character: 303
+SQL state: 42883
