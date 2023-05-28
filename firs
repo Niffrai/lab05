@@ -9,7 +9,7 @@ BEGIN
             d0 := DATE_TRUNC('MONTH', MAKE_DATE(y, m, 1)::TIMESTAMP);
             d1 := d0 + INTERVAL '1 month';
             EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                y, m, d0, d1);
+                y, m, d0::DATE, d1::DATE);
         END LOOP;
     END LOOP;
 END;
