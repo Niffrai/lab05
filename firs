@@ -1,15 +1,30 @@
-ERROR:  PRIMARY KEY constraint on table "measurement" lacks column "mark" which is part of the partition key.unique constraint on partitioned table must include all partitioning columns 
-
-ERROR:  unique constraint on partitioned table must include all partitioning columns
-SQL state: 0A000
-Detail: PRIMARY KEY constraint on table "measurement" lacks column "mark" which is part of the partition key.
-Context: SQL statement "
+CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER) RETURNS VOID AS $$
+DECLARE
+    d0 TIMESTAMP;
+    d1 TIMESTAMP;
+    y INTEGER;
+    m INTEGER;
+BEGIN
+    -- Create initial partitioned table
+    EXECUTE '
         CREATE TABLE IF NOT EXISTS data.measurement (
-            id SERIAL PRIMARY KEY,
+            id SERIAL,
             mark TIMESTAMP WITHOUT TIME ZONE,
             temperature NUMERIC,
-            city TEXT
+            city TEXT,
+            PRIMARY KEY (mark, id)
         )
         PARTITION BY RANGE (mark)
-    "
-PL/pgSQL function data.create_partition(integer,integer) line 9 at EXECUTE
+    ';
+
+    FOR y IN y1 .. y2 LOOP
+        FOR m IN 1 .. 12 LOOP
+            d0 := DATE_TRUNC('MONTH', (y::TEXT || '-' || LPAD(m::TEXT, 2, '0') || '-01')::TIMESTAMP);
+            d1 := (d0 + INTERVAL '1 month')::DATE - INTERVAL '1 day';
+            EXECUTE format('
+                CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%s PARTITION OF data.measurement
+                FOR VALUES FROM (%L) TO (%L)', LPAD(y::TEXT, 4, '0'), LPAD(m::TEXT, 2, '0'), d0, d1);
+        END LOOP;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
