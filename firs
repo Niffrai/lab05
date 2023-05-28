@@ -1,21 +1,6 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y0 INTEGER, y1 INTEGER)
-RETURNS VOID AS $$
-DECLARE
-    y INTEGER;
-    m INTEGER;
-    d0 TIMESTAMP;
-    d1 TIMESTAMP;
-    partition_name TEXT;
-BEGIN
-    FOR y IN y0 .. y1 LOOP
-        FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', TIMESTAMP (TO_CHAR(y, '9999') || '-' || TO_CHAR(m, '09') || '-01'));
-            d1 := d0 + INTERVAL '1 month';
-            partition_name := 'part_y' || y || 'm' || LPAD(m::TEXT, 2, '0');
-            
-            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_%s PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                           partition_name, d0, d1);
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  syntax error at or near "TO_CHAR"
+LINE 12:             d0 := DATE_TRUNC('MONTH', TIMESTAMP (TO_CHAR(y, ...
+                                                          ^ 
+
+SQL state: 42601
+Character: 304
