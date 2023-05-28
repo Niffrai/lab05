@@ -1,6 +1,23 @@
-ERROR:  syntax error at or near "y"
-LINE 19:             d0 := DATE_TRUNC('MONTH', TIMESTAMP (y || '-' ||...
-                                                          ^ 
+CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
+    RETURNS VOID
+    LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    y INTEGER;
+    m INTEGER;
+    d0 TIMESTAMP;
+    d1 TIMESTAMP;
+BEGIN
+    FOR y IN y1 .. y2 LOOP
+        FOR m IN 1 .. 12 LOOP
+            d0 := DATE_TRUNC('MONTH', MAKE_TIMESTAMP(y, m, 1));
+            d1 := d0 + INTERVAL '1 month';
+            EXECUTE format('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
+                           y, m, d0, d1);
+            EXECUTE format('INSERT INTO data.measurement_part_y%sm%02d SELECT * FROM data.measurement_all WHERE mark >= %L AND mark < %L',
+                           y, m, d0, d1);
+        END LOOP;
+    END LOOP;
+END;
+$$;
 
-SQL state: 42601
-Character: 457
