@@ -1,16 +1,6 @@
-CREATE OR REPLACE FUNCTION data.create_partition(y1 INTEGER, y2 INTEGER)
-RETURNS VOID AS $$
-DECLARE
-    d0 TIMESTAMP;
-    d1 TIMESTAMP;
-BEGIN
-    FOR y IN y1 .. y2 LOOP
-        FOR m IN 1 .. 12 LOOP
-            d0 := DATE_TRUNC('MONTH', TIMESTAMP (y::TEXT || '-' || m::TEXT || '-01'));
-            d1 := d0 + INTERVAL '1 month';
-            EXECUTE FORMAT('CREATE TABLE IF NOT EXISTS data.measurement_part_y%sm%02d PARTITION OF data.measurement FOR VALUES FROM (%L) TO (%L)',
-                y, m, d0, d1);
-        END LOOP;
-    END LOOP;
-END;
-$$ LANGUAGE PLPGSQL;
+ERROR:  syntax error at or near "y1"
+LINE 9:             d0 := DATE_TRUNC('MONTH', TIMESTAMP (y1::TEXT ||...
+                                                         ^ 
+
+SQL state: 42601
+Character: 249
