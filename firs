@@ -1,9 +1,6 @@
-CREATE OR REPLACE FUNCTION data.get_coastline_shapes() RETURNS TABLE (shape INTEGER, point_count INTEGER) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT shape, COUNT(*) AS point_count
-    FROM data.coastline
-    GROUP BY shape
-    HAVING COUNT(*) > 1;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "shape" is ambiguous 
+
+ERROR:  column reference "shape" is ambiguous
+SQL state: 42702
+Detail: It could refer to either a PL/pgSQL variable or a table column.
+Context: PL/pgSQL function api.get_coastline_shapes() line 3 at RETURN QUERY
