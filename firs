@@ -1,18 +1,9 @@
-CREATE OR REPLACE FUNCTION api.get_intersecting_shapes()
-  RETURNS TABLE (shape integer, point_count integer) AS
-$$
-BEGIN
-  RETURN QUERY
-  SELECT coastline.shape, COUNT(*) AS point_count
-  FROM coastline
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
+
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT coastline.shape, COUNT(*) AS point_count
+  FROM data.coastline
   WHERE EXISTS (
     SELECT 1
-    FROM coastline AS c2
-    WHERE coastline.shape <> c2.shape
-      AND coastline.latitude = c2.latitude
-      AND coastline.longitude = c2.longitude
-  )
-  GROUP BY coastline.shape;
-END;
-$$
-LANGUAGE plpgsql;
