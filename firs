@@ -6,13 +6,13 @@ $$
 BEGIN
   RETURN QUERY
   WITH shape_points AS (
-    SELECT segment, coastline.latitude, coastline.longitude
-    FROM data.coastline
-    WHERE shape = shape_id
+    SELECT segment, c.latitude, c.longitude
+    FROM data.coastline c
+    WHERE c.shape = shape_id
     ORDER BY segment
   )
-  SELECT ROW_NUMBER() OVER () AS point_number, latitude, longitude
-  FROM shape_points;
+  SELECT ROW_NUMBER() OVER () AS point_number, sp.latitude, sp.longitude
+  FROM shape_points sp;
 END;
 $$
 LANGUAGE plpgsql;
