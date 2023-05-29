@@ -1,1 +1,8 @@
-
+CREATE OR REPLACE FUNCTION api.get_cities(country_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING(50)) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT city.identifier, city.description
+    FROM data.city
+    WHERE data.city.country = country_id;
+END;
+$$ LANGUAGE plpgsql;
