@@ -1,9 +1,9 @@
-ERROR:  cross-database references are not implemented: "data.measurement_all.temperature"
-LINE 2:     FROM data.measurement_all.temperature
-                 ^
+ERROR:  column "date" does not exist
+LINE 1: SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
+                   ^
 QUERY:  SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
-    FROM data.measurement_all.temperature
+    FROM data.measurement_all
     WHERE city_id = city_id
 CONTEXT:  PL/pgSQL function api.get_measurement_time_range(integer) line 3 at RETURN QUERY 
 
-SQL state: 0A000
+SQL state: 42703
