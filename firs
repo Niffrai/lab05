@@ -1,9 +1,7 @@
-ERROR:  Returned type character varying(50) does not match expected type integer in column 1.structure of query does not match function result type 
-
-ERROR:  structure of query does not match function result type
-SQL state: 42804
-Detail: Returned type character varying(50) does not match expected type integer in column 1.
-Context: SQL statement "SELECT city.description
-    FROM data.city
-    WHERE data.city.country = country_id"
-PL/pgSQL function api.get_cities(integer) line
+CREATE OR REPLACE FUNCTION api.get_cities_with_coordinates() RETURNS TABLE (identifier INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT city.identifier, city.latitude, city.longitude
+    FROM data.city;
+END;
+$$ LANGUAGE plpgsql;
