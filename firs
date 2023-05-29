@@ -1,11 +1,8 @@
-ERROR:  invalid reference to FROM-clause entry for table "region"
-LINE 3:   LEFT JOIN data.country AS country ON data.region.identifie...
-                                               ^
-HINT:  There is an entry for table "region", but it cannot be referenced from this part of the query.
-QUERY:  SELECT data.region.identifier, COUNT(data.country.identifier) AS country_count
-  FROM data.region AS region
-  LEFT JOIN data.country AS country ON data.region.identifier = country.identifier
-  GROUP BY data.region.identifier
-CONTEXT:  PL/pgSQL function api.count_countries_per_region() line 3 at RETURN QUERY 
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
 
-SQL state: 42P01
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT region.identifier, COUNT(country.identifier) AS country_count
+  FROM data.region AS region
+  LEFT JOIN data.country AS country ON region.identifier = country.identifier
