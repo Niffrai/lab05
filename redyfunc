@@ -14,6 +14,25 @@ BEGIN
     FROM data.city;
 END;
 $$ LANGUAGE plpgsql;
+/////3
+CREATE OR REPLACE FUNCTION api.get_coastline_shapes()
+  RETURNS TABLE (shape integer, point_count integer) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT coastline.shape, COUNT(*)::integer AS point_count
+  FROM data.coastline
+  WHERE EXISTS (
+    SELECT 1
+    FROM data.coastline AS c2
+    WHERE coastline.shape <> c2.shape
+      AND coastline.latitude = c2.latitude
+      AND coastline.longitude = c2.longitude
+  )
+  GROUP BY coastline.shape;
+END;
+$$
+LANGUAGE plpgsql;
 /////4
 CREATE OR REPLACE FUNCTION api.get_countries(region_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING) AS $$
 BEGIN
