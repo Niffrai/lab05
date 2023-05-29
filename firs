@@ -1,11 +1,11 @@
-CREATE OR REPLACE FUNCTION api.count_countries_per_region()
-  RETURNS TABLE (region_id INTEGER, country_count INTEGER)
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT region.region_id, COUNT(country.country_id) AS country_count
+ERROR:  invalid reference to FROM-clause entry for table "region"
+LINE 3:   LEFT JOIN data.country AS country ON data.region.identifie...
+                                               ^
+HINT:  There is an entry for table "region", but it cannot be referenced from this part of the query.
+QUERY:  SELECT data.region.identifier, COUNT(data.country.identifier) AS country_count
   FROM data.region AS region
-  LEFT JOIN data.country AS country ON region.region_id = country.region_id
-  GROUP BY region.region_id;
-END;
-$$ LANGUAGE plpgsql;
+  LEFT JOIN data.country AS country ON data.region.identifier = country.identifier
+  GROUP BY data.region.identifier
+CONTEXT:  PL/pgSQL function api.count_countries_per_region() line 3 at RETURN QUERY 
+
+SQL state: 42P01
