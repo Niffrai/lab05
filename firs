@@ -1,6 +1,10 @@
-ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "shape" is ambiguous 
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
 
-ERROR:  column reference "shape" is ambiguous
-SQL state: 42702
-Detail: It could refer to either a PL/pgSQL variable or a table column.
-Context: PL/pgSQL function api.get_coastline_shapes() line 3 at RETURN QUERY
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT coastline.shape AS shapes, COUNT(*) AS point_count
+    FROM data.coastline
+    GROUP BY shape
+    HAVING COUNT(*) > 1"
+PL/pgSQL function api.get_coastline_shapes() line 3 at RETURN QUERY
