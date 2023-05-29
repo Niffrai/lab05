@@ -1,14 +1,12 @@
-ERROR:  Returned type bigint does not match expected type integer in column 1.structure of query does not match function result type 
-
-ERROR:  structure of query does not match function result type
-SQL state: 42804
-Detail: Returned type bigint does not match expected type integer in column 1.
-Context: SQL statement "WITH shape_points AS (
-    SELECT c.segment, c.latitude, c.longitude
-    FROM data.coastline c
-    WHERE c.shape = shape_id
-    ORDER BY segment
-  )
-  SELECT ROW_NUMBER() OVER () AS point_number, sp.latitude, sp.longitude
-  FROM shape_points sp"
-PL/pgSQL function api.get_shape_points(integer) line 3 at RETURN QUERY
+CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
+  RETURNS TABLE (point_number integer, latitude numeric, longitude numeric) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT ROW_NUMBER() OVER () AS point_number, c.latitude, c.longitude
+  FROM data.coastline c
+  WHERE c.shape = shape_id
+  ORDER BY c.segment;
+END;
+$$
+LANGUAGE plpgsql;
