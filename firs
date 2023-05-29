@@ -1,9 +1,6 @@
-CREATE OR REPLACE FUNCTION api.get_country_cities_count()
-RETURNS SETOF RECORD AS $$
-BEGIN
-    RETURN QUERY
-    SELECT ROW(country::INTEGER, COUNT(*))
-    FROM data.city
-    GROUP BY country;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  Row type defined by OUT parameters is different.cannot change return type of existing function 
+
+ERROR:  cannot change return type of existing function
+SQL state: 42P13
+Detail: Row type defined by OUT parameters is different.
+Hint: Use DROP FUNCTION api.get_country_cities_count() first.
