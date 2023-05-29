@@ -1,17 +1,2 @@
-CREATE OR REPLACE FUNCTION api.get_shape_point(search_shape_id INTEGER) 
-  RETURNS TABLE (point_order INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION)
-AS $$
-DECLARE
-  point_record RECORD;
-BEGIN
-  FOR point_record IN 
-    SELECT segment AS point_order, latitude, longitude
-    FROM data.coastline
-    WHERE shape = search_shape_id
-    ORDER BY segment
-  LOOP
-    RETURN NEXT point_record;
-  END LOOP;
-  RETURN;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  RETURN NEXT cannot have a parameter in function with OUT parameters
+LINE 13:     RETURN NEXT point_record;
