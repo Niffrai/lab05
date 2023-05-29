@@ -1,4 +1,9 @@
-SELECT line_number, COUNT(*) AS point_count
-FROM data.coastline
-GROUP BY line_number
-HAVING COUNT(*) > 1
+CREATE OR REPLACE FUNCTION api.get_closed_figures() RETURNS TABLE(line_number INTEGER, point_count INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT line_number, COUNT(*) AS point_count
+    FROM data.coastline
+    GROUP BY line_number
+    HAVING COUNT(*) > 1;
+END;
+$$ LANGUAGE plpgsql;
