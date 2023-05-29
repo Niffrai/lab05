@@ -6,3 +6,11 @@ BEGIN
     WHERE data.city.country = country_id;
 END;
 $$ LANGUAGE plpgsql;
+//////
+CREATE OR REPLACE FUNCTION api.get_city_location() RETURNS TABLE (identifier INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT city.identifier, city.latitude, city.longitude
+    FROM data.city;
+END;
+$$ LANGUAGE plpgsql;
