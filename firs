@@ -1,8 +1,9 @@
-CREATE OR REPLACE FUNCTION api.get_cities_by_country_id(country_id INTEGER) RETURNS TABLE (identifier INTEGER, description TEXT) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT identifier, description
-    FROM api.cities
-    WHERE country_id = country_id;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  Returned type character varying(50) does not match expected type text in column 2.structure of query does not match function result type 
+
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type character varying(50) does not match expected type text in column 2.
+Context: SQL statement "SELECT city.country, city.description
+    FROM data.city
+    WHERE data.city.country = data.city.country"
+PL/pgSQL function api.get_cities(integer) line 3 at RETURN QUERY
