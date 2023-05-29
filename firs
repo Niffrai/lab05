@@ -1,12 +1,1 @@
-CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
-  RETURNS TABLE (point_number integer, latitude numeric, longitude numeric) AS
-$$
-BEGIN
-  RETURN QUERY
-  SELECT ROW_NUMBER() OVER () AS point_number, c.latitude, c.longitude
-  FROM data.coastline c
-  WHERE c.shape = shape_id
-  ORDER BY c.segment;
-END;
-$$
-LANGUAGE plpgsql;
+ERROR:  cached plan must not change result type 
