@@ -10,7 +10,7 @@ BEGIN
     WHERE shape = search_shape_id
     ORDER BY segment
   LOOP
-    RETURN NEXT point_record.segment, point_record.latitude, point_record.longitude;
+    RETURN NEXT point_record;
   END LOOP;
   RETURN;
 END;
