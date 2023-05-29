@@ -1,8 +1,18 @@
-SELECT shape_id, COUNT(*) AS point_count
-FROM (
-  SELECT shape_id, COUNT(*) AS intersection_count
-  FROM data.coastline
-  GROUP BY shape_id, longitude, latitude
-  HAVING COUNT(*) > 1
-) AS intersections
-GROUP BY shape_id;
+CREATE OR REPLACE FUNCTION api.get_intersecting_shapes()
+  RETURNS TABLE (shape integer, point_count integer) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT shape, COUNT(*) AS point_count
+  FROM coastline
+  WHERE EXISTS (
+    SELECT 1
+    FROM coastline AS c2
+    WHERE coastline.shape <> c2.shape
+      AND coastline.latitude = c2.latitude
+      AND coastline.longitude = c2.longitude
+  )
+  GROUP BY shape;
+END;
+$$
+LANGUAGE plpgsql;
