@@ -1,9 +1,10 @@
-CREATE OR REPLACE FUNCTION api.get_closed_figures() RETURNS TABLE(line_number INTEGER, point_count INTEGER) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT line_number, COUNT(*) AS point_count
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
+
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT shape, COUNT(*) AS point_count
     FROM data.coastline
-    GROUP BY line_number
-    HAVING COUNT(*) > 1;
-END;
-$$ LANGUAGE plpgsql;
+    GROUP BY shape
+    HAVING COUNT(*) > 1"
+PL/pgSQL function api.get_coasline_shap
