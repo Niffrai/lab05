@@ -1,17 +1,12 @@
-CREATE OR REPLACE FUNCTION api.get_shape_point(search_shape_id INTEGER) 
-  RETURNS TABLE (point_order INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION)
-AS $$
-DECLARE
-  point_record RECORD;
+CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
+  RETURNS TABLE (point_number integer, latitude numeric, longitude numeric) AS
+$$
 BEGIN
-  FOR point_record IN 
-    SELECT segment, latitude, longitude
-    FROM data.coastline
-    WHERE shape = search_shape_id
-    ORDER BY segment
-  LOOP
-    RETURN NEXT point_record;
-  END LOOP;
-  RETURN;
+  RETURN QUERY
+  SELECT segment, latitude, longitude
+  FROM data.coastline
+  WHERE shape = shape_id
+  ORDER BY segment;
 END;
-$$ LANGUAGE plpgsql;
+$$
+LANGUAGE plpgsql;
