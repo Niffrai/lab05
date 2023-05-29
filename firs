@@ -1,6 +1,9 @@
-ERROR:  Row type defined by OUT parameters is different.cannot change return type of existing function 
+ERROR:  Returned type character varying(50) does not match expected type integer in column 1.structure of query does not match function result type 
 
-ERROR:  cannot change return type of existing function
-SQL state: 42P13
-Detail: Row type defined by OUT parameters is different.
-Hint: Use DROP FUNCTION api.get_cities(integer) first.
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type character varying(50) does not match expected type integer in column 1.
+Context: SQL statement "SELECT city.description
+    FROM data.city
+    WHERE data.city.country = country_id"
+PL/pgSQL function api.get_cities(integer) line
