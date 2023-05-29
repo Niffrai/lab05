@@ -1,17 +1,6 @@
-CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
-  RETURNS TABLE (point_number integer, latitude numeric, longitude numeric) AS
-$$
-BEGIN
-  RETURN QUERY
-  WITH shape_points AS (
-    SELECT segment, latitude, longitude
-    FROM data.coastline
-    WHERE shape = shape_id
-    ORDER BY segment
-  )
-  SELECT ROW_NUMBER() OVER () AS point_number, latitude, longitude
-  FROM shape_points;
-END;
-$$
-LANGUAGE plpgsql;
+ERROR:  Row type defined by OUT parameters is different.cannot change return type of existing function 
 
+ERROR:  cannot change return type of existing function
+SQL state: 42P13
+Detail: Row type defined by OUT parameters is different.
+Hint: Use DROP FUNCTION api.get_shape_points(integer) first
