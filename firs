@@ -1,15 +1,8 @@
-CREATE OR REPLACE VIEW data.partition_stats AS
-SELECT
-    pg_class.relname AS partition_name,
-    pg_total_relation_size(pg_class.oid) AS total_size,
-    pg_indexes_size(pg_class.oid) AS index_size,
-    pg_stat_all_tables.n_live_tup AS row_count
-FROM
-    pg_class
-JOIN
-    pg_stat_all_tables ON pg_class.relname = pg_stat_all_tables.relname
-WHERE
-    pg_class.relname LIKE 'measurement_part_y%'
-    AND pg_stat_all_tables.n_live_tup > 0
-ORDER BY
-    pg_stat_all_tables.n_live_tup ASC;
+CREATE OR REPLACE FUNCTION api.get_cities_by_country_id(country_id INTEGER) RETURNS TABLE (identifier INTEGER, description TEXT) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT identifier, description
+    FROM api.cities
+    WHERE country_id = country_id;
+END;
+$$ LANGUAGE plpgsql;
