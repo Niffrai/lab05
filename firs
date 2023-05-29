@@ -1,14 +1,9 @@
-CREATE OR REPLACE FUNCTION api.get_average_temperature_reduce(city_id INTEGER, start_date DATE, end_date DATE, num_values INTEGER)
-RETURNS TABLE (unix_ts TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
+CREATE OR REPLACE FUNCTION api.get_temperature_range(city_id INTEGER)
+RETURNS TABLE (earliest_date TIMESTAMP WITHOUT TIME ZONE, latest_date TIMESTAMP WITHOUT TIME ZONE) AS $$
 BEGIN
     RETURN QUERY
-    SELECT mark, AVG(temperature) AS average_temperature
-    FROM data.measurement_all
-    WHERE city = city_id
-        AND mark >= start_date
-        AND mark <= end_date
-    GROUP BY mark
-    ORDER BY mark
-    LIMIT num_values;
+    SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
+    FROM temperature_measurement
+    WHERE city_id = city_id;
 END;
 $$ LANGUAGE plpgsql;
