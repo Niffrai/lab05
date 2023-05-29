@@ -1,7 +1,4 @@
-CREATE OR REPLACE FUNCTION api.get_cities_with_coordinates() RETURNS TABLE (identifier INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT city.identifier, city.latitude, city.longitude
-    FROM data.city;
-END;
-$$ LANGUAGE plpgsql;
+SELECT shape, COUNT(*) AS point_count
+FROM data.coastline
+GROUP BY shape
+HAVING COUNT(*) > 1;
