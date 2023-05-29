@@ -1,5 +1,8 @@
-SELECT shape, COUNT(*) AS point_count
-FROM data.coastline
-GROUP BY shape
-HAVING COUNT(*) > 1;
-
+SELECT shape_id, COUNT(*) AS point_count
+FROM (
+  SELECT shape_id, COUNT(*) AS intersection_count
+  FROM data.coastline
+  GROUP BY shape_id, longitude, latitude
+  HAVING COUNT(*) > 1
+) AS intersections
+GROUP BY shape_id;
