@@ -1,3 +1,4 @@
+///////1
 CREATE OR REPLACE FUNCTION api.get_cities(country_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING(50)) AS $$
 BEGIN
     RETURN QUERY
@@ -112,3 +113,4 @@ BEGIN
   FROM data.region;
 END;
 $$ LANGUAGE plpgsql;
+//////////11
