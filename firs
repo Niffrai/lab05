@@ -1,6 +1,9 @@
-ERROR:  a column definition list is required for functions returning "record"
-LINE 1: SELECT * FROM api.get_country_cities_count()
-                      ^ 
-
-SQL state: 42601
-Character: 15
+CREATE OR REPLACE FUNCTION api.get_country_cities_count()
+RETURNS TABLE (country_id INTEGER, city_count INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT data.city.country, COUNT(*) AS city_count
+    FROM data.city
+    GROUP BY data.city.country;
+END;
+$$ LANGUAGE plpgsql;
