@@ -1,9 +1,9 @@
-CREATE OR REPLACE FUNCTION api.get_temperature_range(city_id INTEGER)
-RETURNS TABLE (earliest_date TIMESTAMP WITHOUT TIME ZONE, latest_date TIMESTAMP WITHOUT TIME ZONE) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
-    FROM temperature_measurement
-    WHERE city_id = city_id;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  cross-database references are not implemented: "data.measurement_all.temperature"
+LINE 2:     FROM data.measurement_all.temperature
+                 ^
+QUERY:  SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
+    FROM data.measurement_all.temperature
+    WHERE city_id = city_id
+CONTEXT:  PL/pgSQL function api.get_measurement_time_range(integer) line 3 at RETURN QUERY 
+
+SQL state: 0A000
