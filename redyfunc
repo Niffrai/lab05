@@ -83,3 +83,13 @@ BEGIN
   GROUP BY data.region.identifier;
 END;
 $$ LANGUAGE plpgsql;
+///////10
+CREATE OR REPLACE FUNCTION api.get_regions()
+  RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING)
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT region.identifier, region.description
+  FROM data.region;
+END;
+$$ LANGUAGE plpgsql;
