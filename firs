@@ -1,11 +1,6 @@
-CREATE OR REPLACE FUNCTION api.get_temperature_readings(city_id INTEGER, start_date DATE, end_date DATE)
-RETURNS TABLE (timestamp TIMESTAMP, temperature NUMERIC) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT mark, temperature
-    FROM data.measurement_all
-    WHERE city = city_id
-        AND mark >= start_date
-        AND mark <= end_date;
-END;
-$$ LANGUAGE plpgsql;
+ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "temperature" is ambiguous 
+
+ERROR:  column reference "temperature" is ambiguous
+SQL state: 42702
+Detail: It could refer to either a PL/pgSQL variable or a table column.
+Context: PL/pgSQL function api.get_daily_temperature(integer,date,date) line 3 at RETURN QUERY
