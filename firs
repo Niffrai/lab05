@@ -3,11 +3,13 @@ SELECT
     table_name AS partition_name,
     pg_total_relation_size(quote_ident(table_name)) AS total_size,
     pg_indexes_size(quote_ident(table_name)) AS index_size,
-    reltuples AS row_count
+    (SELECT reltuples FROM pg_class WHERE relname = quote_ident(table_name)) AS row_count
 FROM
     information_schema.tables
 WHERE
     table_name LIKE 'measurement_part_y%'
-    AND reltuples > 0
+    AND EXISTS (
+        SELECT 1 FROM pg_class WHERE relname = quote_ident(table_name)
+    )
 ORDER BY
-    reltuples ASC;
+    row_count ASC;
