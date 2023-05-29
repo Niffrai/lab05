@@ -1,9 +1,9 @@
 CREATE OR REPLACE FUNCTION api.get_country_cities_count()
-RETURNS TABLE (country_id INTEGER, city_count INTEGER) AS $$
+RETURNS SETOF RECORD AS $$
 BEGIN
     RETURN QUERY
-    SELECT CAST(country AS INTEGER) AS country_id, COUNT(*) AS city_count
+    SELECT ROW(country::INTEGER, COUNT(*))
     FROM data.city
-    GROUP BY country_id;
+    GROUP BY country;
 END;
 $$ LANGUAGE plpgsql;
