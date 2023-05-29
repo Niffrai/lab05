@@ -1,11 +1,1 @@
-CREATE OR REPLACE FUNCTION api.get_coastline_segment_points(segment integer)
-  RETURNS TABLE (point_number integer, latitude double precision, longitude double precision) AS
-$$
-BEGIN
-  RETURN QUERY
-  SELECT segment, c.latitude, c.longitude
-  FROM coastline AS c
-  WHERE c.shape = segment;
-END;
-$$
-LANGUAGE plpgsql;
+'measurement_part_y%'
