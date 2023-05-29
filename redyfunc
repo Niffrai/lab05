@@ -15,11 +15,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 /////4
-CREATE OR REPLACE FUNCTION api.get_countries(region_id INTEGER) RETURNS TABLE (country_id INTEGER, country_name CHARACTER VARYING) AS $$
+CREATE OR REPLACE FUNCTION api.get_countries(region_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING) AS $$
 BEGIN
     RETURN QUERY
     SELECT data.country.identifier, data.country.description
     FROM data.country
-    WHERE region_id = region_id;
+    INNER JOIN data.region ON data.country.region = data.region.identifier
+    WHERE data.region.identifier = region_id;
 END;
 $$ LANGUAGE plpgsql;
+//////
