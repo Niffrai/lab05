@@ -1,6 +1,14 @@
-ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "temperature" is ambiguous 
-
-ERROR:  column reference "temperature" is ambiguous
-SQL state: 42702
-Detail: It could refer to either a PL/pgSQL variable or a table column.
-Context: PL/pgSQL function api.get_daily_temperature(integer,date,date) line 3 at RETURN QUERY
+CREATE OR REPLACE FUNCTION api.get_average_temperature(city_id INTEGER, start_date DATE, end_date DATE, num_values INTEGER)
+RETURNS TABLE (timestamp TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT mark, AVG(temperature) AS average_temperature
+    FROM data.measurement_all
+    WHERE city = city_id
+        AND mark >= start_date
+        AND mark <= end_date
+    GROUP BY mark
+    ORDER BY mark
+    LIMIT num_values;
+END;
+$$ LANGUAGE plpgsql;
