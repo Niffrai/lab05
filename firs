@@ -1,13 +1,13 @@
 CREATE OR REPLACE VIEW data.partition_stats AS
 SELECT
-    tableoid::regclass AS partition_name,
-    pg_total_relation_size(tableoid) AS total_size,
-    pg_indexes_size(tableoid) AS index_size,
+    table_name AS partition_name,
+    pg_total_relation_size(quote_ident(table_name)) AS total_size,
+    pg_indexes_size(quote_ident(table_name)) AS index_size,
     reltuples AS row_count
 FROM
-    pg_class
+    information_schema.tables
 WHERE
-    relname LIKE 'measurement_part_y%'
+    table_name LIKE 'measurement_part_y%'
     AND reltuples > 0
 ORDER BY
     reltuples ASC;
