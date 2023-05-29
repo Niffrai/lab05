@@ -1,9 +1,8 @@
-CREATE OR REPLACE FUNCTION api.get_countries_by_region(region_id INTEGER) RETURNS TABLE (country_id INTEGER, country_name TEXT) AS $$
+CREATE OR REPLACE FUNCTION api.get_city_count_by_country() RETURNS TABLE (country_id INTEGER, city_count INTEGER) AS $$
 BEGIN
     RETURN QUERY
-    SELECT c.country_id, c.country_name
-    FROM data.country c
-    INNER JOIN data.region r ON c.region_id = r.region_id
-    WHERE r.region_id = region_id;
+    SELECT c.country_id, COUNT(*) AS city_count
+    FROM data.city c
+    GROUP BY c.country_id;
 END;
 $$ LANGUAGE plpgsql;
