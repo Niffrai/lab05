@@ -1,9 +1,9 @@
-CREATE OR REPLACE FUNCTION api.get_country_cities_count()
-RETURNS TABLE (country_id INTEGER, city_count INTEGER) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT data.city.country, COUNT(*) AS city_count
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
+
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT data.city.country, COUNT(*) AS city_count
     FROM data.city
-    GROUP BY data.city.country;
-END;
-$$ LANGUAGE plpgsql;
+    GROUP BY data.city.country"
+PL/pgSQL function api.get_country_cities_count() line 3 at RETURN QUERY
