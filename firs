@@ -1,15 +1,15 @@
 CREATE OR REPLACE VIEW data.partition_stats AS
 SELECT
-    partition.relname AS partition_name,
-    pg_total_relation_size(partition.oid) AS total_size,
-    pg_indexes_size(partition.oid) AS index_size,
-    pg_stat_all_tables.n_live_tup AS row_count
+    p.tablename AS partition_name,
+    pg_total_relation_size(p.oid) AS total_size,
+    pg_indexes_size(p.oid) AS index_size,
+    s.n_live_tup AS row_count
 FROM
-    pg_class AS partition
+    pg_partitioned_table p
 JOIN
-    pg_stat_all_tables ON partition.relname = pg_stat_all_tables.relname
+    pg_stat_all_tables s ON p.tablename = s.relname
 WHERE
-    partition.relname LIKE 'measurement_part_y%'
-    AND pg_stat_all_tables.n_live_tup > 0
+    p.tablename LIKE 'measurement_part_y%'
+    AND s.n_live_tup > 0
 ORDER BY
-    pg_stat_all_tables.n_live_tup ASC;
+    s.n_live_tup ASC;
