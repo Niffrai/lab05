@@ -1,7 +1,14 @@
-ERROR:  function api.get_daily_temperature_reduce(integer, integer, unknown, unknown) does not exist
-LINE 1: SELECT * FROM api.get_daily_temperature_reduce(10, 5, '2020-...
-                      ^
-HINT:  No function matches the given name and argument types. You might need to add explicit type casts. 
-
-SQL state: 42883
-Character: 15
+CREATE OR REPLACE FUNCTION api.get_average_temperature_reduce(city_id INTEGER, start_date DATE, end_date DATE, num_values INTEGER)
+RETURNS TABLE (timestamp TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT mark, AVG(temperature) AS average_temperature
+    FROM data.measurement_all
+    WHERE city = city_id
+        AND mark >= start_date
+        AND mark <= end_date
+    GROUP BY mark
+    ORDER BY mark
+    LIMIT num_values;
+END;
+$$ LANGUAGE plpgsql;
