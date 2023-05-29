@@ -24,4 +24,13 @@ BEGIN
     WHERE data.region.identifier = region_id;
 END;
 $$ LANGUAGE plpgsql;
-//////
+//////5
+CREATE OR REPLACE FUNCTION api.get_country_cities_count()
+RETURNS TABLE (identifier INTEGER, countries INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT data.city.country, COUNT(*)::INTEGER AS city_count
+    FROM data.city
+    GROUP BY data.city.country;
+END;
+$$ LANGUAGE plpgsql;
