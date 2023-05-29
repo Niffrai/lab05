@@ -1,9 +1,5 @@
-CREATE OR REPLACE FUNCTION api.get_closed_figures() RETURNS TABLE(shape integer, point_count bigint) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT data.coastline.shape, COUNT(*) AS point_count
-    FROM data.coastline
-    GROUP BY data.coastline.shape
-    HAVING COUNT(*) > 1;
-END;
-$$ LANGUAGE plpgsql;
+SELECT shape, COUNT(*) AS point_count
+FROM data.coastline
+GROUP BY shape
+HAVING COUNT(*) > 1;
+
