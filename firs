@@ -1,11 +1,6 @@
-CREATE OR REPLACE FUNCTION api.get_coastline_segment_points(segment integer)
-  RETURNS TABLE (point_number integer, latitude double precision, longitude double precision) AS
-$$
-BEGIN
-  RETURN QUERY
-  SELECT segment, latitude, longitude
-  FROM coastline
-  WHERE shape = segment;
-END;
-$$
-LANGUAGE plpgsql;
+ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "segment" is ambiguous 
+
+ERROR:  column reference "segment" is ambiguous
+SQL state: 42702
+Detail: It could refer to either a PL/pgSQL variable or a table column.
+Context: PL/pgSQL function api.get_shape_points(integer) line 3 at RETURN QUERY
