@@ -1,6 +1,17 @@
-ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "latitude" is ambiguous 
-
-ERROR:  column reference "latitude" is ambiguous
-SQL state: 42702
-Detail: It could refer to either a PL/pgSQL variable or a table column.
-Context: PL/pgSQL function api.get_shape_point(integer) line 3 at RETURN QUERY
+CREATE OR REPLACE FUNCTION api.get_shape_point(search_shape_id INTEGER) 
+  RETURNS TABLE (point_order INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION)
+AS $$
+DECLARE
+  point_record RECORD;
+BEGIN
+  FOR point_record IN 
+    SELECT segment AS point_order, latitude, longitude
+    FROM data.coastline
+    WHERE shape = search_shape_id
+    ORDER BY segment
+  LOOP
+    RETURN NEXT point_record;
+  END LOOP;
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
