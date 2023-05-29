@@ -1,11 +1,14 @@
-CREATE OR REPLACE FUNCTION api.count_countries_per_region()
-  RETURNS TABLE (region_id INTEGER, country_count INTEGER)
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT data.region.identifier, COUNT(data.country.identifier) AS country_count
+ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
+
+ERROR:  structure of query does not match function result type
+SQL state: 42804
+Detail: Returned type bigint does not match expected type integer in column 2.
+Context: SQL statement "SELECT data.region.identifier, COUNT(data.country.identifier) AS country_count
   FROM data.region
-  LEFT JOIN data.country ON data.region.identifier = data.country.region_id
-  GROUP BY data.region.identifier;
-END;
-$$ LANGUAGE plpgsql;
+  LEFT JOIN data.country ON data.region.identifier = data.country.region
+  GROUP BY data.region.identifier"
+PL/pgSQL function api.count_countries_per_region() line 3 at RETURN QUERY
+			
+Total rows: 1 of 1
+Query complete 00:00:00.432
+Ln 1, Col 47
