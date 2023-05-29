@@ -39,8 +39,8 @@ CREATE OR REPLACE FUNCTION api.get_daily_temperature(city_id INTEGER, start_date
 RETURNS TABLE (ts TIMESTAMP WITHOUT TIME ZONE, temperature DOUBLE PRECISION) AS $$
 BEGIN
     RETURN QUERY
-    SELECT data.measurement_all.mark, data.measurement_all.temperature
-    FROM data.measurement_all
+    SELECT data.measurement.mark, data.measurement.temperature
+    FROM data.measurement
     WHERE city = city_id
         AND mark >= start_date
         AND mark <= end_date;
@@ -52,7 +52,7 @@ RETURNS TABLE (unix_ts TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE P
 BEGIN
     RETURN QUERY
     SELECT mark, AVG(temperature) AS average_temperature
-    FROM data.measurement_all
+    FROM data.measurement
     WHERE city = city_id
         AND mark >= start_date
         AND mark <= end_date
