@@ -1,6 +1,18 @@
-ERROR:  It could refer to either a PL/pgSQL variable or a table column.column reference "shape" is ambiguous 
-
-ERROR:  column reference "shape" is ambiguous
-SQL state: 42702
-Detail: It could refer to either a PL/pgSQL variable or a table column.
-Context: PL/pgSQL function api.get_coastline_shapes() line 3 at RETURN QUERY
+CREATE OR REPLACE FUNCTION api.get_intersecting_shapes()
+  RETURNS TABLE (shape integer, point_count integer) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT coastline.shape, COUNT(*) AS point_count
+  FROM coastline
+  WHERE EXISTS (
+    SELECT 1
+    FROM coastline AS c2
+    WHERE coastline.shape <> c2.shape
+      AND coastline.latitude = c2.latitude
+      AND coastline.longitude = c2.longitude
+  )
+  GROUP BY coastline.shape;
+END;
+$$
+LANGUAGE plpgsql;
