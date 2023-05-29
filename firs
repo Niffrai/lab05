@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION api.get_average_temperature_reduce(city_id INTEGER, start_date DATE, end_date DATE, num_values INTEGER)
-RETURNS TABLE (timestamp TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
+RETURNS TABLE (unix_ts TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
 BEGIN
     RETURN QUERY
     SELECT mark, AVG(temperature) AS average_temperature
