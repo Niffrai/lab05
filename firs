@@ -9,5 +9,6 @@ FROM
 WHERE
     relname LIKE 'measurement_part_y%'
     AND reltuples > 0
+    AND relkind = 'r'
 ORDER BY
     reltuples ASC;
