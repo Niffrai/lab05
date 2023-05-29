@@ -1,9 +1,11 @@
-ERROR:  column "date" does not exist
-LINE 1: SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
-                   ^
-QUERY:  SELECT MIN(date) AS earliest_date, MAX(date) AS latest_date
-    FROM data.measurement_all
-    WHERE city_id = city_id
-CONTEXT:  PL/pgSQL function api.get_measurement_time_range(integer) line 3 at RETURN QUERY 
-
-SQL state: 42703
+CREATE OR REPLACE FUNCTION api.count_countries_per_region()
+  RETURNS TABLE (region_id INTEGER, country_count INTEGER)
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT region.region_id, COUNT(country.country_id) AS country_count
+  FROM data.region AS region
+  LEFT JOIN data.country AS country ON region.region_id = country.region_id
+  GROUP BY region.region_id;
+END;
+$$ LANGUAGE plpgsql;
