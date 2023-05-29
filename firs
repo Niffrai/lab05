@@ -1,14 +1,11 @@
-CREATE OR REPLACE VIEW data.partition_stats AS
-SELECT
-    relname AS partition_name,
-    pg_total_relation_size(oid) AS total_size,
-    pg_indexes_size(oid) AS index_size,
-    reltuples AS row_count
-FROM
-    pg_class
-WHERE
-    relname LIKE 'measurement_part_y%'
-    AND reltuples > 0
-    AND relkind = 'r'
-ORDER BY
-    reltuples ASC;
+CREATE OR REPLACE FUNCTION api.get_coastline_points(shape_id integer)
+  RETURNS TABLE (point_number integer, latitude float, longitude float)
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT segment, latitude, longitude
+  FROM data.coastline
+  WHERE shape = shape_id
+  ORDER BY segment;
+END;
+$$ LANGUAGE plpgsql;
