@@ -1,4 +1,9 @@
-SELECT shape, COUNT(*) AS point_count
-FROM data.coastline
-GROUP BY shape
-HAVING COUNT(*) > 1;
+CREATE OR REPLACE FUNCTION data.get_coastline_shapes() RETURNS TABLE (shape INTEGER, point_count INTEGER) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT shape, COUNT(*) AS point_count
+    FROM data.coastline
+    GROUP BY shape
+    HAVING COUNT(*) > 1;
+END;
+$$ LANGUAGE plpgsql;
