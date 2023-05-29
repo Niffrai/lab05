@@ -1,10 +1,18 @@
 CREATE OR REPLACE VIEW data.partition_stats AS
 SELECT
-    pg_partition_tree.partrelid::regclass AS partition_name,
-    pg_partition_tree.n_live_tup AS row_count
+    pg_class.relname AS partition_name,
+    pg_total_relation_size(pg_class.oid) AS total_size,
+    pg_indexes_size(pg_class.oid) AS index_size,
+    pg_stat_all_tables.n_live_tup AS row_count
 FROM
-    pg_partition_tree('measurement'::regclass) AS pg_partition_tree
+    pg_class
+JOIN
+    pg_stat_all_tables ON pg_class.relname = pg_stat_all_tables.relname
 WHERE
-    pg_partition_tree.n_live_tup > 0
+    pg_class.relname LIKE 'measurement_part_y%'
+    AND pg_stat_all_tables.n_live_tup > 0
+    AND pg_class.relnamespace = (
+        SELECT oid FROM pg_namespace WHERE nspname = 'public'
+    )
 ORDER BY
-    pg_partition_tree.n_live_tup ASC;
+    pg_stat_all_tables.n_live_tup ASC;
