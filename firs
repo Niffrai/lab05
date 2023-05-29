@@ -1,6 +1,6 @@
-ERROR:  Row type defined by OUT parameters is different.cannot change return type of existing function 
+ERROR:  a column definition list is required for functions returning "record"
+LINE 1: SELECT * FROM api.get_country_cities_count()
+                      ^ 
 
-ERROR:  cannot change return type of existing function
-SQL state: 42P13
-Detail: Row type defined by OUT parameters is different.
-Hint: Use DROP FUNCTION api.get_country_cities_count() first.
+SQL state: 42601
+Character: 15
