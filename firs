@@ -1,20 +1,15 @@
 CREATE OR REPLACE VIEW data.partition_stats AS
 SELECT
-    child.relname AS partition_name,
-    pg_total_relation_size(child.oid) AS total_size,
-    pg_indexes_size(child.oid) AS index_size,
+    partition.relname AS partition_name,
+    pg_total_relation_size(partition.oid) AS total_size,
+    pg_indexes_size(partition.oid) AS index_size,
     pg_stat_all_tables.n_live_tup AS row_count
 FROM
-    pg_inherits
+    pg_class AS partition
 JOIN
-    pg_class parent ON pg_inherits.inhparent = parent.oid
-JOIN
-    pg_class child ON pg_inherits.inhrelid = child.oid
-JOIN
-    pg_stat_all_tables ON child.relname = pg_stat_all_tables.relname
+    pg_stat_all_tables ON partition.relname = pg_stat_all_tables.relname
 WHERE
-    parent.relname = 'measurement'
-    AND child.relname LIKE 'measurement_part_y%'
+    partition.relname LIKE 'measurement_part_y%'
     AND pg_stat_all_tables.n_live_tup > 0
 ORDER BY
     pg_stat_all_tables.n_live_tup ASC;
