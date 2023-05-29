@@ -1,11 +1,4 @@
-CREATE OR REPLACE FUNCTION api.get_coastline_shapes()
-  RETURNS TABLE (shape_id INTEGER, point_count INTEGER)
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT shape, COUNT(*)::INTEGER AS point_count
-  FROM data.coastline
-  GROUP BY shape
-  HAVING COUNT(*) > 1;
-END;
-$$ LANGUAGE plpgsql;
+SELECT line_number, COUNT(*) AS point_count
+FROM data.coastline
+GROUP BY line_number
+HAVING COUNT(*) > 1
