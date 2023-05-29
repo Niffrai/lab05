@@ -1,9 +1,11 @@
-CREATE OR REPLACE FUNCTION api.get_regions()
-  RETURNS TABLE (region_id INTEGER, region_name TEXT)
+CREATE OR REPLACE FUNCTION api.get_coastline_shapes()
+  RETURNS TABLE (shape_id INTEGER, point_count INTEGER)
 AS $$
 BEGIN
   RETURN QUERY
-  SELECT identifier, name
-  FROM data.region;
+  SELECT shape, COUNT(*) AS point_count
+  FROM data.coastline
+  GROUP BY shape
+  HAVING COUNT(*) > 1;
 END;
 $$ LANGUAGE plpgsql;
