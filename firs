@@ -1,9 +1,11 @@
-CREATE OR REPLACE FUNCTION api.get_country_cities_count()
-RETURNS TABLE (country_id INTEGER, city_count INTEGER) AS $$
+CREATE OR REPLACE FUNCTION api.get_temperature_readings(city_id INTEGER, start_date DATE, end_date DATE)
+RETURNS TABLE (timestamp TIMESTAMP, temperature NUMERIC) AS $$
 BEGIN
     RETURN QUERY
-    SELECT data.city.country, COUNT(*)::INTEGER AS city_count
-    FROM data.city
-    GROUP BY data.city.country;
+    SELECT mark, temperature
+    FROM data.measurement_all
+    WHERE city = city_id
+        AND mark >= start_date
+        AND mark <= end_date;
 END;
 $$ LANGUAGE plpgsql;
