@@ -1,10 +1,9 @@
-ERROR:  Returned type bigint does not match expected type integer in column 2.structure of query does not match function result type 
-
-ERROR:  structure of query does not match function result type
-SQL state: 42804
-Detail: Returned type bigint does not match expected type integer in column 2.
-Context: SQL statement "SELECT data.coastline.shape, COUNT(*) AS point_count
+CREATE OR REPLACE FUNCTION api.get_closed_figures() RETURNS TABLE(shape integer, point_count bigint) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT data.coastline.shape, COUNT(*) AS point_count
     FROM data.coastline
     GROUP BY data.coastline.shape
-    HAVING COUNT(*) > 1"
-PL/pgSQL function api.get_coastlin
+    HAVING COUNT(*) > 1;
+END;
+$$ LANGUAGE plpgsql;
