@@ -34,3 +34,15 @@ BEGIN
     GROUP BY data.city.country;
 END;
 $$ LANGUAGE plpgsql;
+///////6
+CREATE OR REPLACE FUNCTION api.get_daily_temperature(city_id INTEGER, start_date DATE, end_date DATE)
+RETURNS TABLE (ts TIMESTAMP WITHOUT TIME ZONE, temperature DOUBLE PRECISION) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT data.measurement_all.mark, data.measurement_all.temperature
+    FROM data.measurement_all
+    WHERE city = city_id
+        AND mark >= start_date
+        AND mark <= end_date;
+END;
+$$ LANGUAGE plpgsql;
