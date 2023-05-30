@@ -115,3 +115,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 //////////11
+CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
+  RETURNS TABLE (point_number integer, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT segment, c.latitude, c.longitude
+  FROM data.coastline c
+  WHERE c.shape = shape_id
+  ORDER BY segment;
+END;
+$$
+LANGUAGE plpgsql;
