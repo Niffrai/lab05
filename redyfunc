@@ -45,14 +45,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 //////5
-SELECT
-  identifier,
-  description,
-  COUNT(*) AS count
-FROM
-  country
-GROUP BY
-  identifier, description;
+CREATE OR REPLACE FUNCTION api.get_country_counts()
+  RETURNS TABLE (identifier integer, description text, count integer)
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    identifier,
+    description,
+    COUNT(*) AS count
+  FROM
+    country
+  GROUP BY
+    identifier, description;
 END;
 $$ LANGUAGE plpgsql;
 ///////6
