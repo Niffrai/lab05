@@ -1,9 +1,0 @@
-ERROR:  Returned type bigint does not match expected type integer in column 1.structure of query does not match function result type 
-
-ERROR:  structure of query does not match function result type
-SQL state: 42804
-Detail: Returned type bigint does not match expected type integer in column 1.
-Context: SQL statement "SELECT COUNT(*) AS count
-  FROM data.country
-  GROUP BY description"
-PL/pgSQL function api.get_country_cities_count() line 3 at RETURN QUERY
