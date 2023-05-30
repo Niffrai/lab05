@@ -1,4 +1,4 @@
-///////1
+~~~~~~~~~~~~api.get_cities~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_cities(country_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING(50)) AS $$
 BEGIN
     RETURN QUERY
@@ -7,7 +7,7 @@ BEGIN
     WHERE data.city.country = country_id;
 END;
 $$ LANGUAGE plpgsql;
-//////2
+~~~~~~~~~~api.get_city_location~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_city_location() RETURNS TABLE (identifier INTEGER, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS $$
 BEGIN
     RETURN QUERY
@@ -15,7 +15,7 @@ BEGIN
     FROM data.city;
 END;
 $$ LANGUAGE plpgsql;
-/////3
+~~~~~~~~~~api.get_coastline_shapes~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_coastline_shapes()
   RETURNS TABLE (shape integer, point_count integer) AS
 $$
@@ -34,7 +34,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-/////4
+~~~~~~~~~~api.get_countries~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_countries(region_id INTEGER) RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING) AS $$
 BEGIN
     RETURN QUERY
@@ -44,7 +44,7 @@ BEGIN
     WHERE data.region.identifier = region_id;
 END;
 $$ LANGUAGE plpgsql;
-//////5
+~~~~~~~~~~~~~count_country_records~~~~~~~~~~
 CREATE OR REPLACE FUNCTION count_country_records()
   RETURNS TABLE (count INTEGER)
 AS $$
@@ -55,7 +55,7 @@ BEGIN
   GROUP BY description;
 END;
 $$ LANGUAGE plpgsql;
-///////6
+~~~~~~~~~~api.get_daily_temperature~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_daily_temperature(city_id INTEGER, start_date DATE, end_date DATE)
 RETURNS TABLE (ts TIMESTAMP WITHOUT TIME ZONE, temperature DOUBLE PRECISION) AS $$
 BEGIN
@@ -67,7 +67,7 @@ BEGIN
         AND mark <= end_date;
 END;
 $$ LANGUAGE plpgsql;
-//////7
+~~~~~~~~~~api.get_daily_temperature_reduce~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_daily_temperature_reduce(city_id INTEGER, start_date DATE, end_date DATE, num_values INTEGER)
 RETURNS TABLE (unix_ts TIMESTAMP WITHOUT TIME ZONE, average_temperature DOUBLE PRECISION) AS $$
 BEGIN
@@ -82,7 +82,7 @@ BEGIN
     LIMIT num_values;
 END;
 $$ LANGUAGE plpgsql;
-//////8
+~~~~~~~~~~api.get_measurement_time_range~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_measurement_time_range(city_id INTEGER)
 RETURNS TABLE (earliest_date TIMESTAMP WITHOUT TIME ZONE, latest_date TIMESTAMP WITHOUT TIME ZONE) AS $$
 BEGIN
@@ -92,7 +92,7 @@ BEGIN
     WHERE city_id = city_id;
 END;
 $$ LANGUAGE plpgsql;
-//////9
+~~~~~~~~~~api.get_region_countries_count~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_region_countries_count()
   RETURNS TABLE (region_id INTEGER, country_count INTEGER)
 AS $$
@@ -104,7 +104,7 @@ BEGIN
   GROUP BY data.region.identifier;
 END;
 $$ LANGUAGE plpgsql;
-///////10
+~~~~~~~~~~api.get_regions~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_regions()
   RETURNS TABLE (identifier INTEGER, description CHARACTER VARYING)
 AS $$
@@ -114,7 +114,7 @@ BEGIN
   FROM data.region;
 END;
 $$ LANGUAGE plpgsql;
-//////////11
+~~~~~~~~~~api.get_shape_points~~~~~~~~~~
 CREATE OR REPLACE FUNCTION api.get_shape_points(shape_id integer)
   RETURNS TABLE (point_number integer, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) AS
 $$
